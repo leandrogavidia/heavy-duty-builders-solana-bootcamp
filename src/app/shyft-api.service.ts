@@ -12,9 +12,9 @@ export class ShyftApiService {
             return of(null);
         }
 
-        const url = new URL(`https://api.shyft.to/sol/v1/wallet/all_tokens`);
-        url.searchParams.set("network", "mainnet-beta")
-        url.searchParams.set("wallet", publicKey)
+        const allTokensUrl = new URL(`https://api.shyft.to/sol/v1/wallet/all_tokens`);
+        allTokensUrl.searchParams.set("network", "mainnet-beta")
+        allTokensUrl.searchParams.set("wallet", publicKey)
 
         const response = this._httpClient.get<{
             result: {
@@ -25,9 +25,41 @@ export class ShyftApiService {
                     image: string
                 }
             }[]
-        }>(url.toString(), { headers: this._header })
+        }>(allTokensUrl.toString(), { headers: this._header })
             .pipe(map((response) => response.result))
 
+        return response;
+    }
+
+    getTransactions(publicKey: string | undefined | null) {
+        if (!publicKey) {
+            return of(null);
+        }
+
+        const getTransactionsUrl = new URL(`https://api.shyft.to/sol/v1/transaction/history`);
+        getTransactionsUrl.searchParams.set("network", "mainnet-beta")
+        getTransactionsUrl.searchParams.set("account", publicKey)
+        getTransactionsUrl.searchParams.set("enable_raw", "true")
+
+        const transactionTypes = ["SOL_TRANSFER", "TOKEN_TRANSFER", "SWAP"];
+
+        const response = this._httpClient.get<{
+            result: {
+                timestamp: string,
+                actions: {
+                    info: {
+                        sender: string,
+                        receiver: string,
+                        amount: number
+                    }
+                }[],
+                signatures: string[],
+                type: string
+            }[]
+        }>(getTransactionsUrl.toString(), { headers: this._header })
+            .pipe(map((response) => {
+                return response.result.filter((t) => transactionTypes.includes(t.type))
+            }))
         return response;
     }
 }

@@ -9,7 +9,7 @@ import { CommonModule } from "@angular/common";
 @Component({
     selector: 'heavy-duty-builders-solana-bootcamp-balance-section',
     template: `
-        <div *ngIf="accountTokenList()" class="bg-gray-900/30 rounded-xl p-4 shadow-xl h-[90vh]">
+        <div class="bg-gray-900/30 rounded-xl p-4 shadow-xl h-[90%]">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl">Tokens: {{ accountTokenList()?.length }}</h2>
                 <p class="text-2xl">Balance</p>
@@ -36,6 +36,6 @@ export class BalanceSectionComponent {
 
     readonly accountTokenList = computedAsync(
         () => this._shyftApiService.getAccountTokenList(this._publicKey()?.toBase58()),
-        { requireSync: true }
+        { requireSync: false }
     );
 }
