@@ -32,10 +32,10 @@ import { MatAnchor } from '@angular/material/button';
     <nav>
       <ul>
         <li>
-          <a [routerLink]="['']"] mat-raised-button>Home</a>
+          <a [routerLink]="['']" mat-raised-button>Home</a>
         </li>
         <li>
-          <a [routerLink]="['settings']"] mat-raised-button>Settings</a>
+          <a [routerLink]="['settings']" mat-raised-button>Settings</a>
         </li>
       </ul>
     </nav>

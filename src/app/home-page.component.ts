@@ -1,11 +1,15 @@
 import { Component } from "@angular/core";
+import { HeroSectionComponent } from "./hero-section.component";
+import { FeaturesSectionComponent } from "./features-section.section";
 
 @Component({
-    selector: 'heavy-duty-builders-solana-bootcamp-home-page',
+    selector: 'heavy-duty-builders-solana-bootcamp-home',
     template: `
-        <h2>Home</h2>
+        <heavy-duty-builders-solana-bootcamp-hero-section></heavy-duty-builders-solana-bootcamp-hero-section>
+        <heavy-duty-builders-solana-bootcamp-features-section></heavy-duty-builders-solana-bootcamp-features-section>
     `,
-    standalone: true
+    standalone: true,
+    imports: [HeroSectionComponent, FeaturesSectionComponent]
 })
 
 export class HomePageComponent { }
