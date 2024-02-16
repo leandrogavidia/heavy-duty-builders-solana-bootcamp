@@ -6,7 +6,7 @@ import { FeaturesSectionComponent } from "./features-section.section";
     selector: 'heavy-duty-builders-solana-bootcamp-home',
     template: `
         <heavy-duty-builders-solana-bootcamp-hero-section></heavy-duty-builders-solana-bootcamp-hero-section>
-        <heavy-duty-builders-solana-bootcamp-features-section></heavy-duty-builders-solana-bootcamp-features-section>
+        <!-- <heavy-duty-builders-solana-bootcamp-features-section></heavy-duty-builders-solana-bootcamp-features-section> -->
     `,
     standalone: true,
     imports: [HeroSectionComponent, FeaturesSectionComponent]

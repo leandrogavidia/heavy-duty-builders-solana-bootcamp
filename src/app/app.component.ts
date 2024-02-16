@@ -1,10 +1,7 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HdWalletMultiButtonComponent } from '@heavy-duty/wallet-adapter-material';
-import { ShyftApiService } from './shyft-api.service';
-import { WalletStore } from '@heavy-duty/wallet-adapter';
-import { toSignal } from "@angular/core/rxjs-interop";
-import { computedAsync } from "ngxtension/computed-async";
+
 import { CommonModule } from '@angular/common';
 import { MatAnchor } from '@angular/material/button';
 
@@ -13,47 +10,29 @@ import { MatAnchor } from '@angular/material/button';
   imports: [RouterModule, HdWalletMultiButtonComponent, CommonModule, MatAnchor],
   selector: 'heavy-duty-builders-solana-bootcamp-root',
   template: `
-  <header>
-    <h1>Hi, I'm Bob</h1>
-    <hd-wallet-multi-button></hd-wallet-multi-button>
-    
-    <div *ngIf="account()">
-      <h2>Account Data:</h2>
-      <ul *ngFor="let token of account()">
-        <li>
-          <p>Name: {{ token.info.name }}</p>
-          <p>Symbol: {{ token.info.symbol }}</p>
-          <p>Balance: {{ token.balance }}</p>
-          <img [src]="token.info.image" class="w-8 h-8" />
-        </li>
-      </ul>
+  <header class="w-full flex justify-between items-center gap-x-8 gap-y-4 flex-wrap">
+    <div class="flex justify-start items-center gap-x-3">
+      <h1 class="text-3xl">Dashboard</h1>
+      <nav class="w-full">
+        <ul class="flex justify-end items-center gap-x-2">
+          <li>
+            <a [routerLink]="['']" mat-stroked-button>Home</a>
+          </li>
+          <li>
+            <a [routerLink]="['settings']"
+            mat-stroked-button>Settings</a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
-    <nav>
-      <ul>
-        <li>
-          <a [routerLink]="['']" mat-raised-button>Home</a>
-        </li>
-        <li>
-          <a [routerLink]="['settings']" mat-raised-button>Settings</a>
-        </li>
-      </ul>
-    </nav>
+    <hd-wallet-multi-button [color]="'basic'"></hd-wallet-multi-button>
   </header>
   
-  <main>
+  <main class="my-6 h-full">
     <router-outlet></router-outlet>
   </main>
   `,
 })
 
-export class AppComponent {
-  private readonly _shyftApiService = inject(ShyftApiService);
-  private readonly _walletStore = inject(WalletStore);
-  private readonly _publicKey = toSignal(this._walletStore.publicKey$);
-
-  readonly account = computedAsync(
-    () => this._shyftApiService.getAccount(this._publicKey()?.toBase58()),
-    { requireSync: true }
-  );
-}
+export class AppComponent { }
