@@ -16,7 +16,7 @@ import { MatAnchor } from '@angular/material/button';
       <nav class="w-full">
         <ul class="flex justify-end items-center gap-x-2">
           <li>
-            <a [routerLink]="['']" mat-stroked-button>Home</a>
+            <a [routerLink]="['']" mat-stroked-button>Balance</a>
           </li>
           <li>
             <a [routerLink]="['settings']"
