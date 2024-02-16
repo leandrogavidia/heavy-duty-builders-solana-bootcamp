@@ -6,10 +6,11 @@ import { WalletStore } from '@heavy-duty/wallet-adapter';
 import { toSignal } from "@angular/core/rxjs-interop";
 import { computedAsync } from "ngxtension/computed-async";
 import { CommonModule } from '@angular/common';
+import { MatAnchor } from '@angular/material/button';
 
 @Component({
   standalone: true,
-  imports: [RouterModule, HdWalletMultiButtonComponent, CommonModule],
+  imports: [RouterModule, HdWalletMultiButtonComponent, CommonModule, MatAnchor],
   selector: 'heavy-duty-builders-solana-bootcamp-root',
   template: `
   <header>
@@ -27,7 +28,23 @@ import { CommonModule } from '@angular/common';
         </li>
       </ul>
     </div>
-  </header>`,
+
+    <nav>
+      <ul>
+        <li>
+          <a [routerLink]="['']"] mat-raised-button>Home</a>
+        </li>
+        <li>
+          <a [routerLink]="['settings']"] mat-raised-button>Settings</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+  
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+  `,
 })
 
 export class AppComponent {
