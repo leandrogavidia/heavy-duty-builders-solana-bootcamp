@@ -6,9 +6,8 @@ import { map, of } from "rxjs";
 export class ShyftApiService {
     private readonly _httpClient = inject(HttpClient);
     private readonly _header = { "x-api-key": "IKuvnVDhazm7wB27" };
-    private readonly _mint = "7EYnhQoR9YM3N7UoaKRoA44Uy8JeaZV3qyouov87awMs";
 
-    getAccount(publicKey: string | undefined | null) {
+    getAccountTokenList(publicKey: string | undefined | null) {
         if (!publicKey) {
             return of(null);
         }
@@ -29,7 +28,6 @@ export class ShyftApiService {
         }>(url.toString(), { headers: this._header })
             .pipe(map((response) => response.result))
 
-        console.log(response);
         return response;
     }
 }
