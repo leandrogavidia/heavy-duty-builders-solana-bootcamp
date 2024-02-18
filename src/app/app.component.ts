@@ -29,7 +29,7 @@ import { MatAnchor } from '@angular/material/button';
     <hd-wallet-multi-button [color]="'basic'"></hd-wallet-multi-button>
   </header>
   
-  <main class="my-6 h-full">
+  <main class="my-6 h-full overflow-x-auto overflow-y-hidden">
     <router-outlet></router-outlet>
   </main>
   `,
