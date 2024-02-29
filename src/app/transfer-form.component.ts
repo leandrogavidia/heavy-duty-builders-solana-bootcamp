@@ -1,26 +1,35 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, Output, inject } from "@angular/core";
 import { FormsModule, NgForm } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatInput } from "@angular/material/input";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { ShyftApiService } from "./shyft-api.service";
+import { computedAsync } from "ngxtension/computed-async";
+import { injectPublicKey } from "@heavy-duty/wallet-adapter";
 
 export interface TransferFormModel {
     memo: string | null,
     amount: number | null,
+    token: string | null,
     receiverAddress: string | null
 }
 
 export interface TransferFormPayload {
     memo: string,
     amount: number,
+    token: string,
     receiverAddress: string
 }
 
 @Component({
     selector: "heavy-duty-builders-solana-bootcamp-transfer-form",
     template: `
-        <form #form="ngForm" (ngSubmit)="onSubmitForm(form)")>
+        <form 
+            #form="ngForm" 
+            (ngSubmit)="onSubmitForm(form)"
+            class="flex flex-col justify-center items-center gap-y-3"
+        >
             <mat-form-field appearance="fill">
                 <mat-label>Concepto</mat-label>
                 <input 
@@ -46,7 +55,37 @@ export interface TransferFormPayload {
             </mat-form-field>
 
             <mat-form-field appearance="fill">
-                <mat-label>Concepto</mat-label>
+                <mat-label>Token</mat-label>
+                <select 
+                    name="token" 
+                    placeholder="ej. Silly"
+                    [(ngModel)]="model.token"
+                    required
+                    #tokenControl="ngModel"
+                    matNativeControl
+                >
+                    @for (token of tokenList(); track token.address) {
+                        <option [value]="token.address">{{ token.info.name }} | {{ token.info.symbol }}</option>
+                    }
+                </select>   
+                
+                <mat-icon matSuffix>attach_money</mat-icon>
+
+                @if (form.submitted && memoControl.errors) {
+                    <mat-error>
+                        @if (tokenControl.errors) {
+                            @if (tokenControl.errors["required"]) {
+                                El Token es obligatorio.
+                            }
+                        }
+                    </mat-error>
+                } @else {
+                    <mat-hint>Debe ser el token de la transferencia</mat-hint>
+                }
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <mat-label>Monto</mat-label>
                 <input 
                     name="amount"
                     type="number"
@@ -113,22 +152,38 @@ export class TransferFormComponent {
     readonly model: TransferFormModel = {
         memo: null,
         amount: null,
-        receiverAddress: null
+        receiverAddress: null,
+        token: null
     }
+
+    private readonly _publicKey = injectPublicKey()
+    private readonly _shyApiService = inject(ShyftApiService);
+    readonly tokenList = computedAsync(
+        () => this._shyApiService.getAccountTokenList(this._publicKey()?.toBase58()),
+        { requireSync: false }
+    )
 
     @Output() readonly submitForm = new EventEmitter<TransferFormPayload>()
 
     onSubmitForm(form: NgForm) {
         if (
-            form.invalid || this.model.amount === null || this.model.memo === null || this.model.receiverAddress === null
+            form.invalid ||
+            this.model.amount === null ||
+            this.model.memo === null ||
+            this.model.receiverAddress === null ||
+            this.model.token === null
         ) {
             console.error("El formulario es invalido")
         } else {
-            this.submitForm.emit({
-                amount: this.model.amount,
-                memo: this.model.memo,
-                receiverAddress: this.model.receiverAddress
-            })
+            const decimals = this.tokenList()?.find((token) => token.address === this.model.token)?.info?.decimals
+            if (decimals) {
+                this.submitForm.emit({
+                    memo: this.model.memo,
+                    amount: this.model.amount * 10 ** decimals,
+                    token: this.model.token,
+                    receiverAddress: this.model.receiverAddress
+                })
+            }
         }
     }
 }
