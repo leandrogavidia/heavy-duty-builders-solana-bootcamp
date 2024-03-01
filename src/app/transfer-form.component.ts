@@ -7,6 +7,9 @@ import { MatFormFieldModule } from "@angular/material/form-field";
 import { ShyftApiService } from "./shyft-api.service";
 import { computedAsync } from "ngxtension/computed-async";
 import { injectPublicKey } from "@heavy-duty/wallet-adapter";
+import { MatDialog } from "@angular/material/dialog";
+import { TransferModalComponent } from "./transfer-modal.component";
+
 
 export interface TransferFormModel {
     memo: string | null,
@@ -138,7 +141,10 @@ export interface TransferFormPayload {
                     }
                 </mat-form-field>
     
-                <button type="submit">Enviar</button>
+                <div class="w-full flex justify-center items-center gap-x-4">
+                    <button (click)="closeModal()" type="button">Cancelar</button>
+                    <button type="submit">Enviar</button>
+                </div>
             </fieldset>
         </form>
     `,
@@ -153,6 +159,7 @@ export interface TransferFormPayload {
 })
 
 export class TransferFormComponent {
+    private readonly _matDialog = inject(MatDialog)
     readonly isDisabled = input.required<boolean>();
 
     readonly model: TransferFormModel = {
@@ -170,6 +177,10 @@ export class TransferFormComponent {
     )
 
     @Output() readonly submitForm = new EventEmitter<TransferFormPayload>()
+
+    closeModal() {
+        this._matDialog.closeAll()
+    }
 
     onSubmitForm(form: NgForm) {
         if (
