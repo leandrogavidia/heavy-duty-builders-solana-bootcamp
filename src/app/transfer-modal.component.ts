@@ -11,6 +11,7 @@ import { createTransferInstructions } from "@heavy-duty/spl-utils";
             <heavy-duty-builders-solana-bootcamp-transfer-form 
                 (submitForm)="onTransfer($event)"
                 [isDisabled]="this.isRunning()"
+                [status]="this.transactionStatus()"
             ></heavy-duty-builders-solana-bootcamp-transfer-form>
         </div>
     `,
@@ -20,16 +21,16 @@ import { createTransferInstructions } from "@heavy-duty/spl-utils";
 
 export class TransferModalComponent {
     private readonly _transactionSender = injectTransactionSender();
-    private readonly _transactionStatus = computed(() => this._transactionSender().status);
+    readonly transactionStatus = computed(() => this._transactionSender().status);
 
     readonly isRunning = computed(() =>
-        this._transactionStatus() === "confirming" ||
-        this._transactionStatus() === "finalizing" ||
-        this._transactionStatus() === "confirming"
+        this.transactionStatus() === "confirming" ||
+        this.transactionStatus() === "finalizing" ||
+        this.transactionStatus() === "confirming"
     )
 
-    readonly isSuccess = computed(() => this._transactionStatus() === "finalized");
-    readonly isFailed = computed(() => this._transactionStatus() === "failed")
+    readonly isSuccess = computed(() => this.transactionStatus() === "finalized");
+    readonly isFailed = computed(() => this.transactionStatus() === "failed")
 
     onTransfer(payload: TransferFormPayload) {
         this._transactionSender.send(({ publicKey }) => createTransferInstructions({

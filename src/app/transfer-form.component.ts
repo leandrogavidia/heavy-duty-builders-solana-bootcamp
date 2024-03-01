@@ -143,7 +143,7 @@ export interface TransferFormPayload {
     
                 <div class="w-full flex justify-center items-center gap-x-4">
                     <button (click)="closeModal()" type="button">Cancelar</button>
-                    <button type="submit">Enviar</button>
+                    <button type="submit">{{ this.isDisabled() ? this.status() + "..." : "Enviar" }}</button>
                 </div>
             </fieldset>
         </form>
@@ -161,6 +161,7 @@ export interface TransferFormPayload {
 export class TransferFormComponent {
     private readonly _matDialog = inject(MatDialog)
     readonly isDisabled = input.required<boolean>();
+    readonly status = input.required<string>();
 
     readonly model: TransferFormModel = {
         memo: null,
