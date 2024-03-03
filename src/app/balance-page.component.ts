@@ -51,7 +51,7 @@ export class BalancePageComponent {
     );
 
     onTransfer() {
-        this._matDialog.open(TransferModalComponent)
+        this._matDialog.open(TransferModalComponent, { disableClose: true })
     }
 
     toggleSection(value: boolean) {
