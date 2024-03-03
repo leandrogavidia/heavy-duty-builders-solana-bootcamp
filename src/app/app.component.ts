@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { HdWalletMultiButtonComponent } from '@heavy-duty/wallet-adapter-material';
 
 import { CommonModule } from '@angular/common';
 import { MatAnchor } from '@angular/material/button';
+import { ConnectionStore } from '@heavy-duty/wallet-adapter';
+import { ShyftApiService } from './shyft-api.service';
 
 @Component({
   standalone: true,
@@ -26,7 +28,7 @@ import { MatAnchor } from '@angular/material/button';
       </nav>
     </div>
 
-    <hd-wallet-multi-button [color]="'basic'"></hd-wallet-multi-button>
+    <hd-wallet-multi-button [hdColor]="'basic'"></hd-wallet-multi-button>
   </header>
   
   <main class="my-6 h-full overflow-x-auto overflow-y-hidden">
@@ -35,4 +37,11 @@ import { MatAnchor } from '@angular/material/button';
   `,
 })
 
-export class AppComponent { }
+export class AppComponent implements OnInit {
+  private readonly _connectionStore = inject(ConnectionStore);
+  private readonly _shyftApiService = inject(ShyftApiService);
+
+  ngOnInit() {
+    this._connectionStore.setEndpoint(this._shyftApiService.getEndpoint())
+  }
+}
